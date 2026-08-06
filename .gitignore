@@ -1,0 +1,10 @@
+__pycache__/
+*.pyc
+.env
+.venv/
+.vscode/
+
+
+
+
+Git이 추적하지 않을 파일 목록입니다. 위 파일들은 GitHub에 올라가지 않습니다.
