@@ -1,11 +1,247 @@
-﻿# 첫 번째 AI 프로젝트
-프로젝트 설명서입니다.
+﻿### 첫 번째 AI 프로젝트프로젝트 제목과 설명입니다.
 
-# Python Practice
+# === 나만의 프롬프트 관리 프로그램===
 
-Python과 Git을 공부하는 저장소입니다.
+Python으로 만든 콘솔 기반 프롬프트 관리 프로그램입니다.
+
+## 주요 기능
+
+1. 프롬프트 추가
+2. 프롬프트 목록
+3. 카테고리별 조회
+4. 프롬프트 검색
+5. 프롬프트 상세 보기
+6. 즐겨찾기 관리
+7. 즐겨찾기 목록
+0. 종료
+선택:
 
 ## 실행 방법
 
 ```bash
-python main.py
+python prompt_manager.py
+```
+
+## 진행 과정 
+
+### 1. 먼저 함수로 기능을 나눈다
+```
+프로그램
+│
+├── 메뉴 보여주기
+├── 프롬프트 추가
+├── 프롬프트 목록
+├── 카테고리 조회
+├── 검색
+├── 상세 보기
+├── 즐겨찾기 변경
+├── 즐겨찾기 목록
+└── 프로그램 실행
+```
+
+### 2. 각각을 함수로 만든다
+```
+def show_menu():
+    pass
+
+def add_prompt():
+    pass
+
+def show_list():
+    pass
+
+def show_by_category():
+    pass
+
+def search_prompt():
+    pass
+
+def show_detail():
+    pass
+
+def toggle_favorite():
+    pass
+
+def show_favorites():
+    pass
+
+def main():
+    pass
+```
+
+### 3. show_menu()부터 pass 자리에 각각 항목을 넣는다 (정의만 하면 안나오므로 마지막에 메뉴 호출 넣어줘야 함)
+
+```
+def show_menu():
+    print("\n========================================")
+    print("        프롬프트 관리 프로그램")
+    print("========================================")
+    print("1. 프롬프트 추가")
+    print("2. 프롬프트 목록")
+    print("3. 카테고리별 조회")
+    print("4. 프롬프트 검색")
+    print("5. 프롬프트 상세 보기")
+    print("6. 즐겨찾기 관리")
+    print("7. 즐겨찾기 목록")
+    print("8. 종료")
+
+
+show_menu()
+```
+### 4. main()에 input과 if choice, elif, else 넣어서 완성하기
+
+```
+def main():
+    show_menu()
+
+    choice = input("선택: ")
+
+    if choice == "1":
+        add_prompt()
+    elif choice == "2":
+        show_list()
+    elif choice == "3":
+        show_by_category()
+    elif choice == "4":
+        search_prompt()
+    elif choice == "5":
+        show_detail()
+    elif choice == "6":
+        toggle_favorite()
+    elif choice == "7":
+        show_favorite()
+    elif choice == "8":
+        print("프로그램을 종료합니다.")
+    else:
+        print("잘못된 선택입니다.")
+```
+
+### 5. add_prompt() 만들기 전에 "데이터 저장 구조 만들기"(프롬프트 저장할 공간 만들기)
+사용자가 프롬프트를 입력한다 → 저장한다 → 나중에 목록에서 다시 본다 → 검색한다 → 즐겨찾기 한다.
+
+ - prompt 틀 작성 방법
+list안에 여러개의 dictionary넣는 방식, list : [  ], dictionary :{  }
+예) 
+```
+prompt = [
+    {
+        "id": 1,
+        "title": "블로그 글 작성",
+        "category": "글쓰기",
+        "content": "AI를 활용하여 블로그 글을 작성해주세요.",
+        "favorite": False
+    },
+    {
+        "id": 2,
+        "title": "여행 일정 추천",
+        "category": "여행",
+        "content": "서울 2박3일 여행 일정을 추천해주세요",
+        "favorite": True
+    }
+]
+
+```
+
+- 주의)  아래 예시처럼 "prompts = []"가 밖에 있어야 하고 아직 프롬프트 없다는 의미, next_id는 1부터 시작할 거란 뜻임.
+
+```
+prompts = []
+next_id = 1
+
+def show_menu():
+    print("\n========================================")
+    print("       프롬프트 관리 프로그램")
+    print("========================================")
+    print("1. 프롬프트 추가")
+    print("2. 프롬프트 목록")
+    print("3. 카테고리별 조회")
+    print("4. 프롬프트 검색")
+    print("5. 프롬프트 상세 보기")
+    print("6. 즐겨찾기 관리")
+    print("7. 즐겨찾기 목록")
+    print("8. 종료")
+    print("========================================")
+```
+
+- 실제 add_prompt() 작성  
+아래에 global next_id 넣어야 "이 함수에서 사용하는 next_id는 새로 만드는 변수가 아니라, 위에 있는 next_id를 사용할 거야." 라는뜻 
+
+```
+def add_prompt():
+    global next_id
+
+    title = input("제목: ")
+    category = input("카테고리: ")
+    content = input("내용: ")
+
+    prompt = {
+        "id": next_id,
+        "title": title,
+        "category": category,
+        "content": content,
+        "favorite": False
+    }
+
+    prompts.append(prompt)
+
+    next_id += 1
+
+    print("프롬프트가 추가되었습니다.")
+```
+
+### 6. show_list() 만들기
+
+```
+def show_list():
+    print("\n========================================")
+    print("             프롬프트 목록               ")
+    print("========================================")
+
+    if not prompts:
+        print("저장된 프롬프트가 없습니다.")
+        return
+
+    for prompt in prompts:
+
+        if prompt["favorite"]:
+            favorite_mark = "★"
+        else:
+            favorite_mark = "☆"
+
+        print(f"[{prompt['id']}] {favorite_mark} {prompt['title']}")
+        print(f"    카테고리: {prompt['category']}")
+        print()
+```
+
+### 7. show_by_category() 카테고리별 조회
+
+```
+def show_by_category():
+    category = input("조회할 카테고리: ")
+
+    print("\n========================================")
+    print(f"       {category} 카테고리 목록")
+    print("========================================")
+
+    found = False
+
+    for prompt in prompts:
+
+        if prompt["category"] == category:
+
+            if prompt["favorite"]:
+                favorite_mark = "★"
+            else:
+                favorite_mark = "☆"
+
+            print(f"[{prompt['id']}] {favorite_mark} {prompt['title']}")
+            print(f"     카테고리: {prompt['category']}")
+            
+            found = True
+
+    if not found:
+        print("해당 카테고리의 프롬프트가 없습니다.")
+```
+
+
+
