@@ -1,5 +1,8 @@
 ﻿### 첫 번째 AI 프로젝트프로젝트 제목과 설명입니다.
 
+---
+---
+
 # === 나만의 프롬프트 관리 프로그램===
 
 Python으로 만든 콘솔 기반 프롬프트 관리 프로그램입니다.
@@ -22,6 +25,9 @@ Python으로 만든 콘솔 기반 프롬프트 관리 프로그램입니다.
 python prompt_manager.py
 ```
 
+---
+---
+
 ## 진행 과정 
 
 ### 1. 먼저 함수로 기능을 나눈다
@@ -38,6 +44,8 @@ python prompt_manager.py
 ├── 즐겨찾기 목록
 └── 프로그램 실행
 ```
+
+---
 
 ### 2. 각각을 함수로 만든다
 ```
@@ -69,6 +77,8 @@ def main():
     pass
 ```
 
+---
+
 ### 3. show_menu()부터 pass 자리에 각각 항목을 넣는다 (정의만 하면 안나오므로 마지막에 메뉴 호출 넣어줘야 함)
 
 ```
@@ -88,6 +98,8 @@ def show_menu():
 
 show_menu()
 ```
+---
+
 ### 4. main()에 input과 if choice, elif, else 넣어서 완성하기
 
 ```
@@ -115,6 +127,8 @@ def main():
     else:
         print("잘못된 선택입니다.")
 ```
+
+---
 
 ### 5. add_prompt() 만들기 전에 "데이터 저장 구조 만들기"(프롬프트 저장할 공간 만들기)
 사용자가 프롬프트를 입력한다 → 저장한다 → 나중에 목록에서 다시 본다 → 검색한다 → 즐겨찾기 한다.
@@ -191,6 +205,7 @@ def add_prompt():
 > 포인트) &nbsp; prompts.append(prompt)           
 > &emsp; &emsp; &emsp; add_prompt():안에 "global next_id"
 
+---
 
 ### 6. show_list() 만들기
 
@@ -217,6 +232,8 @@ def show_list():
 ```
 > 포인트) &nbsp; f-string --> f"이름: {name}"하면 {name} 부분에 실제 값이 들어감  
 > &emsp; &emsp;&emsp; 
+
+---
 
 ### 7. show_by_category() 카테고리별 조회 만들기
 
@@ -250,6 +267,7 @@ def show_by_category():
 > 포인트) &nbsp;for문 앞에 "found = False", if문 안에 found = True 해야 카테고리랑 같은것만 출력<br>
 > &emsp; &emsp;&emsp; if not found:
 
+---
 
 ### 8. search_prompt() 프롬프트 검색 만들기
 
@@ -309,6 +327,7 @@ found가 False인가?
 YES → "검색 결과가 없습니다."
 ```
 
+---
 
 ### 9. show_detail() 프롬프트 상세 보기 만들기
 ```
@@ -348,6 +367,7 @@ def show_detail():
 > &emsp; &emsp; &emsp; prompt_id = int(input("프롬프트 ID: "))  : : input에서 받은 '문자' 가 '숫자' 로 <br>
 > 주의 ) int에 문자가 들어가면 오류 생김 --> 나중에 try/except를 사용해 이런 입력 오류도 처리 해 보기
 
+---
 
 ### 10. toggle_favorite() 즐겨찾기 관리 만들기
 ```
@@ -408,12 +428,168 @@ else:
 > &emsp; &emsp; &emsp; 나중에 not을 이용해 보기 <br>
 > &emsp; &emsp; &emsp; --> prompt["favorite"] = not prompt["favorite"] 이 한줄이 False → True, True → False 해줌
 
+---
+
+### 11. show_favorite() 즐겨찾기 목록 만들기
+
+```
+def show_favorite():
+    print("\n========================================")
+    print("          즐겨찾기 목록")
+    print("========================================")
+
+    found = False
+
+    for prompt in prompts:
+        if prompt["favorite"]:
+            found = True
+
+            print(f"[{prompt['id']}] {prompt['title']}")
+            print(f"    카테고리: {prompt['category']}")
+            print("    즐겨찾기: ★")
+            print()
+
+    if not found:
+        print("즐겨찾기한 프롬프트가 없습니다.")
+```
 
 
 
 
 
+> 포인트) &nbsp; 기존 가지고 있는 데이터에서 if prompt["favorite"]:로 필터링 <br>
+예시)
+```
+prompts
+│
+├── ID 1 → favorite = False
+├── ID 2 → favorite = True
+├── ID 3 → favorite = False
+└── ID 4 → favorite = True
+```
+에서
+```
+ID 2
+ID 4
+```
+만 골라내기 필터링
 
+> 주의 ) 이대로면 main()은 딱 한번만 실행 함
+
+---
+
+### 12. while 반복문을 이용해서 main()을 완성하기
+
+```
+def main():
+    while True:
+        show_menu()
+
+        choice = input("선택: ")
+
+        if choice == "1":
+            add_prompt()
+
+        elif choice == "2":
+            show_list()          
+
+        elif choice == "3":
+            show_by_category()
+
+        elif choice == "4":
+            search_prompt()
+
+        elif choice == "5":
+            show_detail()
+
+        elif choice == "6":
+            toggle_favorite()
+
+        elif choice == "7":
+            show_favorite()
+
+        elif choice == "8":
+            print("프로그램을 종료합니다.")
+            break
+
+        else:
+            print("잘못된 선택입니다")
+```
+
+> 포인트) &nbsp; while True: 로 무한 반복 <br>
+> &emsp; &emsp; &emsp; 8번 실행하면 break 로 프로그램 종료 <br>
+> &emsp; &emsp; &emsp; 마지막 main()앞에 if __name__ == "__main__": 추가로 종료 전까지 메인 계속 출력 <br>
+
+- 프로그램의 구조
+```
+main()
+ │
+ └── while True
+       │
+       ├── show_menu()
+       │
+       ├── 1 → add_prompt()
+       │
+       ├── 2 → show_list()
+       │
+       ├── 3 → show_by_category()
+       │
+       ├── 4 → search_prompt()
+       │
+       ├── 5 → show_detail()
+       │
+       ├── 6 → toggle_favorite()
+       │
+       ├── 7 → show_favorite()
+       │
+       └── 8 → break
+```
+
+---
+---
+
+# 보너스
+## 1. JSON 저장/불러오기 추가
+
+> 포인트) &nbsp; 맨위에 import json 추가 하여 json 모둘 가져오기 <br>
+---
+> &emsp; &emsp; &emsp; load_prompts() 함수 만들기 : 기존 함수들 위쪽 prompts = [] 위에 추가 <br>
+```
+def load_prompts():
+    global prompts
+
+    try:
+        with open("prompts.json", "r", encoding="utf-8") as file:
+            prompts = json.load(file)
+
+    except FileNotFoundError:
+        prompts = []
+```
+> &emsp; &emsp; &emsp; global prompts --> 함수 안에서 바깥에 있는 prompts를 수정하겠다 prompts.json <br>
+> &emsp; &emsp; &emsp; open --> prompts.json 파일을 "r" 읽기 모드로 열되, 한글 안깨지도록 utf-8형식 사용해서 열어라 <br>
+> &emsp; &emsp; &emsp; json.load() --> JSON 파일의 내용을 Python 데이터로 변환해서 prompts에 넣어라 <br>
+---
+> &emsp; &emsp; &emsp; save_prompts() 함수 만들기 추가 --> 반대로 프로그램에서 데이터를 변경했을 때 JSON 파일에 저장 <br>
+```
+def save_prompts():
+    with open("prompts.json", "w", encoding="utf-8") as file:
+        json.dump(prompts, file, ensure_ascii=False, indent=4)
+```
+> &emsp; &emsp; &emsp; open --> prompts.json 파일을 "w" 쓰기 하되, 한글 안깨지도록 utf-8형식 사용해서 저장해라 <br>
+> &emsp; &emsp; &emsp; json.dump()--> Python의 prompts 데이터를 JSON 형식으로 파일에 저장해라 <br>
+> &emsp; &emsp; &emsp; ensure_ascii=False 사용해야 한글이 정상적으로 저장됩 <br>
+> &emsp; &emsp; &emsp;indent=4 는 JSON 파일을 보기 좋게 정렬함 <br>
+
+
+여행 일정 추천
+
+
+## 2. Markdown 내보내기 추가
+
+
+> 포인트) &nbsp; while True: 로 무한 반복 <br>
+> &emsp; &emsp; &emsp; 8번 실행하면 break 로 프로그램 종료 <br>
+> &emsp; &emsp; &emsp; 마지막 main()앞에 if __name__ == "__main__": 추가로 종료 전까지 메인 계속 출력 <br>
 
 
 
