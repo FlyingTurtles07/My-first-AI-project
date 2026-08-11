@@ -188,6 +188,9 @@ def add_prompt():
 
     print("프롬프트가 추가되었습니다.")
 ```
+> 포인트) &nbsp; prompts.append(prompt)           
+> &emsp; &emsp; &emsp; add_prompt():안에 "global next_id"
+
 
 ### 6. show_list() 만들기
 
@@ -212,8 +215,10 @@ def show_list():
         print(f"    카테고리: {prompt['category']}")
         print()
 ```
+> 포인트) &nbsp; f-string --> f"이름: {name}"하면 {name} 부분에 실제 값이 들어감  
+> &emsp; &emsp;&emsp; 
 
-### 7. show_by_category() 카테고리별 조회
+### 7. show_by_category() 카테고리별 조회 만들기
 
 ```
 def show_by_category():
@@ -242,6 +247,130 @@ def show_by_category():
     if not found:
         print("해당 카테고리의 프롬프트가 없습니다.")
 ```
+> 포인트) &nbsp;for문 앞에 "found = False", if문 안에 found = True 해야 카테고리랑 같은것만 출력<br>
+> &emsp; &emsp;&emsp; if not found:
+
+
+### 8. search_prompt() 프롬프트 검색 만들기
+
+```
+def search_prompt():
+    keyword = input("검색어: ")
+
+    print("\n========================================")
+    print(f"          {keyword} 검색결과")
+    print("========================================")
+
+    found = False
+
+    for prompt in prompts:
+        if keyword in prompt["title"] or keyword in prompt["content"]:
+            found = True
+
+            if prompt["favorite"]:
+                favorite_mark = "★"
+            else:
+                favorite_mark = "☆"
+
+            print(f"[{prompt['id']}] {favorite_mark} {prompt['title']}")   
+            print(f"     카테고리: {prompt['category']}")  
+            print()
+
+    if not found:
+        print("검색 결과가 없습니다.")
+```
+> 포인트) &nbsp; in -->  if keyword in prompt["title"] or keyword in prompt["content"] 제목 or 내용 안에 키워드 있으면<br>
+> &emsp; &emsp; &emsp; 나중에 keyword.lower() 해보기 : 영어 대소문자 구별 못하는 경우
+
+- 이번 함수의 흐름
+```
+  검색어 입력
+    ↓
+keyword
+    ↓
+prompts를 하나씩 확인
+    ↓
+제목에 검색어가 있는가?
+    ↓
+       또는
+    ↓
+내용에 검색어가 있는가?
+    ↓
+YES ─────→ 화면에 출력
+ │
+NO
+ │
+다음 프롬프트 확인
+    ↓
+모든 프롬프트 확인 완료
+    ↓
+found가 False인가?
+    ↓
+YES → "검색 결과가 없습니다."
+```
+
+
+### 9. show_detail() 프롬프트 상세 보기 만들기
+```
+def show_detail():
+    prompt_id = int(input("프롬프트 ID: "))
+
+    print("\n========================================")
+    print(f"          프롬프트 상세 보기")
+    print("========================================")
+
+    found = False
+    
+    for prompt in prompts:
+        if prompt['id'] == prompt_id:
+            found = True
+
+            if prompt["favorite"]:
+                favorite_mark = "★"
+            else:
+                favorite_mark = "☆"
+
+            print(f"ID: {prompt['id']}")
+            print(f"제목: {prompt['title']}")
+            print(f"카테고리: {prompt['category']}")
+            print(f"즐겨찾기: {favorite_mark}")
+            print("\n내용:")
+            print(prompt["content"])
+
+            break
+
+    if not found:
+        print("해당 ID의 프롬프트가 없습니다.")
+```
+
+> 포인트) &nbsp; input 앞에 int넣어야 함. --> int()는 문자열을 숫자로 바꿔주는 함수  <br>
+> &emsp; &emsp; &emsp; prompt_id = int(input("프롬프트 ID: "))  : : input에서 받은 '문자' 가 '숫자' 로 <br>
+> 주의 ) int에 문자가 들어가면 오류 생김 --> 나중에 try/except를 사용해 이런 입력 오류도 처리 해 보기
+
+
+### 10. toggle_favorite() 즐겨찾기 관리 만들기
+
+
+
+> 포인트) &nbsp; input 앞에 int넣어야 함. --> int()는 문자열을 숫자로 바꿔주는 함수  <br>
+> &emsp; &emsp; &emsp; prompt_id = int(input("프롬프트 ID: "))  : : input에서 받은 '문자' 가 '숫자' 로 <br>
+> 주의 ) int에 문자가 들어가면 오류 생김 --> 나중에 try/except를 사용해 이런 입력 오류도 처리 해 보기
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
