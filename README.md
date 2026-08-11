@@ -343,18 +343,70 @@ def show_detail():
         print("해당 ID의 프롬프트가 없습니다.")
 ```
 
-> 포인트) &nbsp; input 앞에 int넣어야 함. --> int()는 문자열을 숫자로 바꿔주는 함수  <br>
+> 포인트) &nbsp; break 의미 : 프롬프트 확인 해서 ID와 같은가? 같으면 상세정보 출력 후 for문 종료  <br>
+> &emsp; &emsp; &emsp; input 앞에 int넣어야 함. --> int()는 문자열을 숫자로 바꿔주는 함수 <br>
 > &emsp; &emsp; &emsp; prompt_id = int(input("프롬프트 ID: "))  : : input에서 받은 '문자' 가 '숫자' 로 <br>
 > 주의 ) int에 문자가 들어가면 오류 생김 --> 나중에 try/except를 사용해 이런 입력 오류도 처리 해 보기
 
 
 ### 10. toggle_favorite() 즐겨찾기 관리 만들기
+```
+def toggle_favorite():
+    prompt_id = int(input("프롬프트 ID: "))
+
+    print("\n========================================")
+    print("          즐겨찾기 관리")
+    print("========================================")
+
+    found = False
+
+    for prompt in prompts:
+        if prompt["id"] == prompt_id:
+            found = True
+
+            if prompt["favorite"]:
+                prompt["favorite"] = False
+                print(f"'{prompt['title']}'을(를) 즐겨찾기에서 해제했습니다.")
+            else:
+                prompt["favorite"] = True
+                print(f"'{prompt['title']}'을(를) 즐겨찾기에 추가했습니다.")
+
+            break
+
+    if not found:
+        print("해당 ID의 프롬프트가 없습니다.")
+```
 
 
+구조를 보면:
+```
+                 prompts
+                    │
+        ┌───────────┼────────────┐
+        ↓           ↓            ↓
+   show_list()  show_detail()  search_prompt()
+        │           │            │
+        └───────────┼────────────┘
+                    │
+             favorite 값
+                    ↑
+                    │
+          toggle_favorite()
+                    │
+              True ↔ False
+```
 
-> 포인트) &nbsp; input 앞에 int넣어야 함. --> int()는 문자열을 숫자로 바꿔주는 함수  <br>
-> &emsp; &emsp; &emsp; prompt_id = int(input("프롬프트 ID: "))  : : input에서 받은 '문자' 가 '숫자' 로 <br>
-> 주의 ) int에 문자가 들어가면 오류 생김 --> 나중에 try/except를 사용해 이런 입력 오류도 처리 해 보기
+> 포인트) &nbsp; 현재 프로그램에서 show_list(), show_by_category(), search_prompt(), show_detail() 모두 같은 마크 사용  <br>
+ ```
+if prompt["favorite"]:
+    favorite_mark = "★"
+else:
+    favorite_mark = "☆"
+```
+> &emsp; &emsp; &emsp; 따라서 toggle_favorite()에서 값을 변경하면 다른 기능에서도 자동으로 바뀐 상태가 표시됨. <br>
+> &emsp; &emsp; &emsp; 이게 바로 하나의 데이터를 여러 함수가 함께 사용하게 하는 것을 아는게 중요. <br>
+> &emsp; &emsp; &emsp; 나중에 not을 이용해 보기 <br>
+> &emsp; &emsp; &emsp; --> prompt["favorite"] = not prompt["favorite"] 이 한줄이 False → True, True → False 해줌
 
 
 
