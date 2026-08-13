@@ -1,0 +1,16 @@
+My-fitst-AI-project/
+│
+├─ prompt_manager.py
+├─ README.md
+└─ screenshots/
+   ├─ 01_개발환경설정 및 Pythin git 버전.png
+   ├─ 02_메뉴실행.png
+   ├─ 03_프롬프트추가.png
+   ├─ 04_프롬프트목록.png
+   ├─ 05_카테고리조회.png
+   ├─ 06_프롬프트검색.png
+   ├─ 07_상세보기.png
+   ├─ 08_즐겨찾기관리.png
+   ├─ 09_즐겨찾기목록.png
+   ├─ 10_프로그램종료.png
+   └─ 11_git_log.png
