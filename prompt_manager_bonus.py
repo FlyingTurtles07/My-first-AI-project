@@ -1,57 +1,34 @@
 import json
 
-DATA_FILE = "prompts.json"
-
-def save_prompts():
-    with open(DATA_FILE, "w", encoding="utf-8") as f:
-        json.dump(prompts, f, ensure_ascii=False, indent=2)
-    print("프롬프트를 저장했습니다.")
-
-def load_prompts():
-    global prompts, next_id
-    try:
-        with open(DATA_FILE, "r", encoding="utf-8") as f:
-            prompts = json.load(f)
-        # 기존 데이터 중 가장 큰 id + 1을 다음 id로 설정
-        if prompts:
-            next_id = max(p["id"] for p in prompts) + 1
-        print("프롬프트를 불러왔습니다.")
-    except FileNotFoundError:
-        print("저장된 파일이 없어 기본 데이터로 시작합니다.")
-
-
-
-
-
-
-
 prompts = [
     {
         "id": 1,
         "title": "블로그 글 작성",
         "category": "글쓰기",
         "content": "AI를 활용해서 블로그 글을 작성해줘.",
-        "favorite": False
+        "favorite": False,
+        "views": 0
     },
     {
         "id": 2,
         "title": "여행 일정 추천",
         "category": "여행",
         "content": "서울 여행 일정을 추천해줘.",
-        "favorite": True
+        "favorite": True,
+        "views": 0
     },
     {
         "id": 3,
         "title": "상품 설명 작성",
         "category": "마케팅",
         "content": "온라인 쇼핑몰 상품 설명을 작성해주세여.",
-        "favorite": True
-        }
+        "favorite": True,
+        "views": 0
+    }
 ]
 next_id = 1
 
-
-
+DATA_FILE = "prompts.json"
 
 
 def show_menu():
@@ -65,15 +42,13 @@ def show_menu():
     print("5. 프롬프트 상세 보기")
     print("6. 즐겨찾기 관리")
     print("7. 즐겨찾기 목록")
-    print("8. Markdown으로 내보내기")
-    print("9. 종료")
+    print("8. 프롬프트 수정")
+    print("9. 프롬프트 삭제")
+    print("10. 조회수 TOP 목록")
+    print("11. 카테고리별 Markdown 내보내기")
+    print("12. 종료")
 
-show_menu()
 
-
-
-
-    
 def add_prompt():
     global next_id
 
@@ -82,11 +57,12 @@ def add_prompt():
     content = input("내용: ")
 
     prompt = {
-    "id": next_id,
-    "title": title,
-    "category": category,
-    "content": content,
-    "favorite": False
+        "id": next_id,
+        "title": title,
+        "category": category,
+        "content": content,
+        "favorite": False,
+        "views": 0
     }
 
     prompts.append(prompt)
@@ -95,12 +71,11 @@ def add_prompt():
 
     print("프롬프트가 추가되었습니다.")
 
+    save_prompts()
 
-    
 
-    
 def show_list():
-     
+
     print("\n========================================")
     print("             프롬프트 목록                ")
     print("========================================")
@@ -119,9 +94,6 @@ def show_list():
         print(f"[{prompt['id']}] {favorite_mark} {prompt['title']}")
         print(f"    카테고리: {prompt['category']}")
         print()
-        
-
-  
 
 
 def show_by_category():
@@ -136,23 +108,19 @@ def show_by_category():
     for prompt in prompts:
 
         if prompt["category"] == category:
-            
+
             if prompt["favorite"]:
                 favorite_mark = "★"
             else:
                 favorite_mark = "☆"
 
-            print(f"[{prompt['id']}] {favorite_mark} {prompt['title']}")   
-            print(f"     카테고리: {prompt['category']}")  
-            
+            print(f"[{prompt['id']}] {favorite_mark} {prompt['title']}")
+            print(f"     카테고리: {prompt['category']}")
+
             found = True
-            
+
     if not found:
         print("해당 카테고리의 프롬프트가 없습니다.")
-        
-        
-
-
 
 
 def search_prompt():
@@ -173,15 +141,12 @@ def search_prompt():
             else:
                 favorite_mark = "☆"
 
-            print(f"[{prompt['id']}] {favorite_mark} {prompt['title']}")   
-            print(f"     카테고리: {prompt['category']}")  
+            print(f"[{prompt['id']}] {favorite_mark} {prompt['title']}")
+            print(f"     카테고리: {prompt['category']}")
             print()
 
     if not found:
         print("검색 결과가 없습니다.")
-
-
-
 
 
 def show_detail():
@@ -192,10 +157,13 @@ def show_detail():
     print("========================================")
 
     found = False
-    
+
     for prompt in prompts:
         if prompt['id'] == prompt_id:
             found = True
+
+            # 상세 보기를 할 때마다 조회수 1 증가
+            prompt["views"] = prompt.get("views", 0) + 1
 
             if prompt["favorite"]:
                 favorite_mark = "★"
@@ -206,6 +174,7 @@ def show_detail():
             print(f"제목: {prompt['title']}")
             print(f"카테고리: {prompt['category']}")
             print(f"즐겨찾기: {favorite_mark}")
+            print(f"조회수: {prompt['views']}")
             print("\n내용:")
             print(prompt["content"])
 
@@ -213,9 +182,8 @@ def show_detail():
 
     if not found:
         print("해당 ID의 프롬프트가 없습니다.")
-
-
-
+    else:
+        save_prompts()
 
 
 def toggle_favorite():
@@ -242,10 +210,8 @@ def toggle_favorite():
 
     if not found:
         print("해당 ID의 프롬프트가 없습니다.")
-
-
-
-
+    else:
+        save_prompts()
 
 
 def show_favorite():
@@ -268,9 +234,133 @@ def show_favorite():
         print("즐겨찾기한 프롬프트가 없습니다.")
 
 
+# ---------------- 보너스 2-1. 수정 / 삭제 ----------------
+
+def edit_prompt():
+    prompt_id = int(input("수정할 프롬프트 ID: "))
+
+    print("\n========================================")
+    print("          프롬프트 수정")
+    print("========================================")
+
+    found = False
+
+    for prompt in prompts:
+        if prompt["id"] == prompt_id:
+            found = True
+
+            print(f"현재 제목: {prompt['title']}")
+            new_title = input("새 제목 (변경 없으면 엔터): ")
+            if new_title:
+                prompt["title"] = new_title
+
+            print(f"현재 카테고리: {prompt['category']}")
+            new_category = input("새 카테고리 (변경 없으면 엔터): ")
+            if new_category:
+                prompt["category"] = new_category
+
+            print(f"현재 내용: {prompt['content']}")
+            new_content = input("새 내용 (변경 없으면 엔터): ")
+            if new_content:
+                prompt["content"] = new_content
+
+            print("수정이 완료되었습니다.")
+            break
+
+    if not found:
+        print("해당 ID의 프롬프트가 없습니다.")
+    else:
+        save_prompts()
 
 
+def delete_prompt():
+    prompt_id = int(input("삭제할 프롬프트 ID: "))
 
+    print("\n========================================")
+    print("          프롬프트 삭제")
+    print("========================================")
+
+    found = False
+
+    for prompt in prompts:
+        if prompt["id"] == prompt_id:
+            found = True
+
+            confirm = input(f"'{prompt['title']}'을(를) 삭제하시겠습니까? (y/n): ")
+            if confirm.lower() == "y":
+                prompts.remove(prompt)
+                print("삭제되었습니다.")
+                save_prompts()
+            else:
+                print("삭제를 취소했습니다.")
+
+            break
+
+    if not found:
+        print("해당 ID의 프롬프트가 없습니다.")
+
+
+# ---------------- 보너스 2-3. 조회수 TOP 목록 ----------------
+
+def show_top_viewed():
+    print("\n========================================")
+    print("          조회수 TOP 목록")
+    print("========================================")
+
+    if not prompts:
+        print("저장된 프롬프트가 없습니다.")
+        return
+
+    # views 값을 기준으로 내림차순(많이 본 순) 정렬
+    sorted_prompts = sorted(prompts, key=lambda p: p.get("views", 0), reverse=True)
+
+    rank = 1
+    for prompt in sorted_prompts[:5]:
+        if prompt["favorite"]:
+            favorite_mark = "★"
+        else:
+            favorite_mark = "☆"
+
+        views = prompt.get("views", 0)
+        print(f"{rank}위. [{prompt['id']}] {favorite_mark} {prompt['title']} (조회수: {views})")
+        rank += 1
+
+
+# ---------------- 보너스 1-1. JSON 저장 / 불러오기 ----------------
+
+def save_prompts():
+    with open(DATA_FILE, "w", encoding="utf-8") as f:
+        json.dump(prompts, f, ensure_ascii=False, indent=2)
+
+
+def load_prompts():
+    global prompts, next_id
+
+    try:
+        with open(DATA_FILE, "r", encoding="utf-8") as f:
+            loaded = json.load(f)
+
+        prompts = loaded
+
+        # 불러온 데이터 중 favorite/views 키가 없는 옛날 데이터를 위한 안전장치
+        for prompt in prompts:
+            if "favorite" not in prompt:
+                prompt["favorite"] = False
+            if "views" not in prompt:
+                prompt["views"] = 0
+
+        if prompts:
+            next_id = max(prompt["id"] for prompt in prompts) + 1
+        else:
+            next_id = 1
+
+        print("저장된 프롬프트를 불러왔습니다.")
+
+    except FileNotFoundError:
+        print("저장된 파일이 없어 기본 데이터로 시작합니다.")
+
+
+# ---------------- 보너스 1-2. 카테고리별 Markdown 내보내기 ----------------
 
 def export_to_markdown():
     print("\n========================================")
@@ -307,10 +397,9 @@ def export_to_markdown():
         print(f"'{filename}' 파일로 내보냈습니다.")
 
 
-
-
-
 def main():
+    load_prompts()
+
     while True:
         show_menu()
 
@@ -320,7 +409,7 @@ def main():
             add_prompt()
 
         elif choice == "2":
-            show_list()          
+            show_list()
 
         elif choice == "3":
             show_by_category()
@@ -338,23 +427,27 @@ def main():
             show_favorite()
 
         elif choice == "8":
-            export_to_markdown()
+            edit_prompt()
 
         elif choice == "9":
+            delete_prompt()
+
+        elif choice == "10":
+            show_top_viewed()
+
+        elif choice == "11":
+            export_to_markdown()
+
+        elif choice == "12":
+            save_prompts()
             print("프로그램을 종료합니다.")
             break
 
         else:
-            print("잘못된 선택입니다")    
-
+            print("잘못된 선택입니다")
 
     print("당신이 선택한 번호: ", choice)
 
 
-
-
-
 if __name__ == "__main__":
     main()
-
-
